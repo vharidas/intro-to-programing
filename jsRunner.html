@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>JS Runner</title>
+  </head>
+  <body>
+    <script type="text/javascript">      
+      let fileName = '',sandbox=null;
+      let load = ()=> {
+        let file = document.querySelector('input').files[0];
+        fileName = file.name;
+        let reader = new FileReader();
+        reader.onload = (e)=> {
+          document.querySelector('#sourceCode').innerHTML = e.target.result;
+        }
+        reader.readAsText(file,'utf8');
+      }
+      let run = ()=>{
+        if(sandbox) sandbox.close();
+        sandbox = window.open('','sandbox');
+        let source = document.querySelector('#sourceCode').innerHTML;
+        sandbox.document.title = fileName;
+        sandbox.document.body.innerHTML = `<h3>${fileName}</h3><xmp>${source}</xmp>`;
+        setTimeout(()=>{
+            sandbox.eval(source);
+        },100);
+      };
+    </script>
+    <input type="file" name="sourceFile" value="" onchange="load();">
+    <input type="button" value="Run" onclick="run();"/>
+    <hr>
+
+    <xmp id="sourceCode">
+      var name = prompt('What is your name?');
+      alert('hello '+name);
+    </xmp>
+  </body>
+</html>
